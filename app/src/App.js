@@ -7,38 +7,34 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
 
-  const startNewGame = () => {
+  const startNewGame = async () => {
     setLoading(true);
     setGuess('');
     setResult(null);
-    fetch('http://localhost:8080/partita', {
+    const response = await fetch('http://localhost:8080/partita', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-    })
-    .then(response => response.json())
-    .then(data => {
-      setGame(data);
-      setLoading(false);
-    })
+    });
+    const data = await response.json();
+    setGame(data);
+    setLoading(false);
   };
 
-  const submitGuess = () => {
+  const ilnumero = async () => {
     setLoading(true);
-    fetch(`http://localhost:8080/partita/${game.id}`, {
+    const response = await fetch(`http://localhost:8080/partita/${game.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ numero: guess }),
-    })
-    .then(response => response.json())
-    .then(data => {
-      setResult(data);
-      setGame(prevGame => ({ ...prevGame, tentativi: data.tentativi }));
-      setLoading(false);
-    })
+    });
+    const data = await response.json();
+    setResult(data);
+    setGame(prevGame => ({ ...prevGame, tentativi: data.tentativi }));
+    setLoading(false);
   };
 
   return (
@@ -59,7 +55,7 @@ function App() {
                 ) : (
                   <>
                     <input type="number" min="1" max="100" value={guess} onChange={e => setGuess(e.target.value)} />
-                    <button onClick={submitGuess}>Invia</button>
+                    <button onClick={ilnumero}>Invia</button>
                   </>
                 )}
                 {result && <p>Risultato: {result.risultato}, Tentativi: {game.tentativi}</p>}
