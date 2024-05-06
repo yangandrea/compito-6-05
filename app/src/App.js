@@ -3,11 +3,11 @@ import './App.css';
 
 function App() {
   const [game, setGame] = useState(null);
-  const [guess, setGuess] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
+  const [Indovina, impostaIndovina] = useState('');
+  const [caricamento, setLoading] = useState(false);
+  const [risultato, setResult] = useState(null);
 
-  const startNewGame = () => {
+  const inzianuovogioco = () => {
     setLoading(true);
     fetch('http://localhost:8080/partita', {
       method: 'POST',
@@ -33,7 +33,7 @@ function App() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ numero: guess }),
+      body: JSON.stringify({ numero: Indovina }),
     })
     .then(response => response.json())
     .then(data => {
@@ -50,23 +50,21 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Indovina il numero</h1>
-        <button onClick={startNewGame}>Nuova partita</button>
-        <hr />
-        { 
-          loading ? 
-            <div>In caricamento... </div>
+        <button onClick={inzianuovogioco}>Nuova partita</button>
+        <hr/>
+        {
+          caricamento ? 
+            <div>In caricamento...</div>
           :
             game ? (
               <div>
                 <p>Game ID: {game.id}</p>
-                <p>Tentativo: {game.tentativi}</p>
-                <input type="number" min="1" max="100" value={guess} onChange={e => setGuess(e.target.value)} />
+                <p>Inserisci un numero tra 1 e 100</p>
+                <input type="text" value={Indovina} onChange={e => impostaIndovina(e.target.value)} />
                 <button onClick={ilnumero}>Invia</button>
-                {result && <p>Risultato: {result.risultato}, Tentativi: {result.tentativi}</p>}
+                {risultato && <p>Risultato: {risultato.risultato}, Tentativi: {risultato.tentativi}</p>}
               </div>
-            ) : (
-              <p>Clicca "Nuova partita" per iniziare la nuova partita</p>
-            )
+            ) : null
         }
       </header>
     </div>
